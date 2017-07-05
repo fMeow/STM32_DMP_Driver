@@ -1708,24 +1708,24 @@ int mpu_read_fifo(short *gyro, short *accel, unsigned long *timestamp,
     more[0] = fifo_count / packet_size - 1;
     sensors[0] = 0;
 
-    if ((index != packet_size) && st.chip_cfg.fifo_enable & INV_XYZ_ACCEL) {
+    if ((index != packet_size) && (st.chip_cfg.fifo_enable & INV_XYZ_ACCEL)) {
         accel[0] = (data[index+0] << 8) | data[index+1];
         accel[1] = (data[index+2] << 8) | data[index+3];
         accel[2] = (data[index+4] << 8) | data[index+5];
         sensors[0] |= INV_XYZ_ACCEL;
         index += 6;
     }
-    if ((index != packet_size) && st.chip_cfg.fifo_enable & INV_X_GYRO) {
+    if ((index != packet_size) && (st.chip_cfg.fifo_enable & INV_X_GYRO)) {
         gyro[0] = (data[index+0] << 8) | data[index+1];
         sensors[0] |= INV_X_GYRO;
         index += 2;
     }
-    if ((index != packet_size) && st.chip_cfg.fifo_enable & INV_Y_GYRO) {
+    if ((index != packet_size) && (st.chip_cfg.fifo_enable & INV_Y_GYRO)) {
         gyro[1] = (data[index+0] << 8) | data[index+1];
         sensors[0] |= INV_Y_GYRO;
         index += 2;
     }
-    if ((index != packet_size) && st.chip_cfg.fifo_enable & INV_Z_GYRO) {
+    if ((index != packet_size) && (st.chip_cfg.fifo_enable & INV_Z_GYRO)) {
         gyro[2] = (data[index+0] << 8) | data[index+1];
         sensors[0] |= INV_Z_GYRO;
         index += 2;
