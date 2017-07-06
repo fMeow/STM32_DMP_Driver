@@ -1,6 +1,6 @@
 // Modify following line.
-extern HAL_HandleTypeDef hi2c1;
 #include "stm32f1xx_hal.h"
+extern I2C_HandleTypeDef hi2c1;
 
 HAL_StatusTypeDef i2c_write(uint8_t slave_addr, uint8_t reg_addr,
 		uint8_t length, uint8_t *data) {
