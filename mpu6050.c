@@ -1,7 +1,9 @@
-#include "inv_mpu.h"
-#include "inv_mpu_dmp_motion_driver.h"
+#include "MPU6050/inv_mpu.h"
+#include "MPU6050/inv_mpu_dmp_motion_driver.h"
+#include "diag/Trace.h"
 #include "stm32f1xx_hal.h"
-#include "mpu6050.h"
+#include "MPU6050/mpu6050.h"
+#include "MPU6050/I2C.h"
 #include<math.h>
 
 #define PRINT_ACCEL     (0x01)
@@ -16,23 +18,12 @@
 #define FLASH_MEM_START ((void*)0x1800)
 #define q30  1073741824.0f
 
-#define log_i puts
+#define log_i trace_puts
 
 short gyro[3], accel[3], sensors;
 float Pitch;
 float q0 = 1.0f, q1 = 0.0f, q2 = 0.0f, q3 = 0.0f;
 static signed char gyro_orientation[9] = { -1, 0, 0, 0, -1, 0, 0, 0, 1 };
-
-extern HAL_StatusTypeDef i2c_write(uint8_t slave_addr, uint8_t reg_addr, uint8_t length,
-    uint8_t *data);
-extern HAL_StatusTypeDef i2c_read(uint8_t slave_addr, uint8_t reg_addr, uint8_t length,
-    uint8_t *data);
-
-
-extern HAL_StatusTypeDef IICwriteBit(uint8_t slave_addr, uint8_t reg_addr, uint8_t bitNum,
-    uint8_t data);
-extern HAL_StatusTypeDef IICwriteBits(uint8_t slave_addr, uint8_t reg_addr, uint8_t bitStart,
-    uint8_t length, uint8_t data);
 
 static unsigned short inv_row_2_scale(const signed char *row) {
   unsigned short b;
