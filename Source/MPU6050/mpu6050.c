@@ -295,7 +295,7 @@ void Read_DMP(void) {
     q1 = quat[1] / q30;
     q2 = quat[2] / q30;
     q3 = quat[3] / q30;
-    Pitch = asin(-2 * q1 * q3 + 2 * q0 * q2) * 57.3;
+    Pitch = sinf(-2 * q1 * q3 + 2 * q0 * q2) * 57.3;
   }
 
 }
