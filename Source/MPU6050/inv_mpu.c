@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include "MPU6050/inv_mpu.h"
 #include "MPU6050/I2C.h"
 
@@ -36,8 +37,6 @@
  * min(int a, int b)
  */
 
-#define STM32_HAL
-#define MPU6050
 
 #if defined MOTION_DRIVER_TARGET_MSP430
 #include "msp430.h"
@@ -106,28 +105,6 @@ static inline int reg_int_cb(struct int_param_s *int_param)
 #define fabs(x)     (((x)>0)?(x):-(x))
 
 #elif defined STM32_HAL
-#include "main.h"
-
-#ifdef TRACE
-#define log_i       trace_puts
-#define log_e       trace_puts
-#else
-#define log_i(...)     do {} while (0)
-#define log_e(...)     do {} while (0)
-#endif
-
-#define delay_ms  HAL_Delay
-
-#define fabs        fabsf
-#define min(a,b) ((a<b)?a:b)
-
-static inline int reg_int_cb(struct int_param_s *int_param)
-{
-    return 0;
-}
-
-#define get_ms(timestamp) (*timestamp=HAL_GetTick())
-
 #else
 #error  Gyro driver is missing the system layer implementations.
 #endif
@@ -1407,6 +1384,7 @@ int mpu_set_compass_sample_rate(unsigned short rate)
     st.chip_cfg.compass_sample_rate = st.chip_cfg.sample_rate / (div + 1);
     return 0;
 #else
+    UNUSED(rate);
     return -1;
 #endif
 }
@@ -2186,13 +2164,14 @@ int mpu_run_self_test(long *gyro, long *accel)
     if (!accel_result)
         result |= 0x02;
 
+#endif
 #ifdef AK89xx_SECONDARY
     compass_result = compass_self_test();
     if (!compass_result)
         result |= 0x04;
 #endif
 restore:
-#elif defined MPU6500
+#if defined MPU6050
     /* For now, this function will return a "pass" result for all three sensors
      * for compatibility with current test applications.
      */
@@ -2537,6 +2516,8 @@ int mpu_get_compass_reg(short *data, unsigned long *timestamp)
         get_ms(timestamp);
     return 0;
 #else
+    UNUSED(timestamp);
+    UNUSED(data);
     return -1;
 #endif
 }
@@ -2552,6 +2533,7 @@ int mpu_get_compass_fsr(unsigned short *fsr)
     fsr[0] = st.hw->compass_fsr;
     return 0;
 #else
+    UNUSED(fsr);
     return -1;
 #endif
 }
@@ -2769,7 +2751,7 @@ int mpu_lp_motion_interrupt(unsigned short thresh, unsigned char time,
 #endif
     } else {
         /* Don't "restore" the previous state if no state has been saved. */
-        int ii;
+        unsigned int ii;
         char *cache_ptr = (char*)&st.chip_cfg.cache;
         for (ii = 0; ii < sizeof(st.chip_cfg.cache); ii++) {
             if (cache_ptr[ii] != 0)

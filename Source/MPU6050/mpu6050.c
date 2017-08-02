@@ -1,10 +1,8 @@
 #include "MPU6050/inv_mpu.h"
 #include "MPU6050/inv_mpu_dmp_motion_driver.h"
-#include "diag/Trace.h"
-#include "stm32f1xx_hal.h"
-#include "MPU6050/mpu6050.h"
 #include "MPU6050/I2C.h"
-#include<math.h>
+#include "MPU6050/mpu6050.h"
+
 
 #define PRINT_ACCEL     (0x01)
 #define PRINT_GYRO      (0x02)
@@ -17,8 +15,6 @@
 #define FLASH_SIZE      (512)
 #define FLASH_MEM_START ((void*)0x1800)
 #define q30  1073741824.0f
-
-#define log_i trace_puts
 
 short gyro[3], accel[3], sensors;
 float Pitch;
@@ -202,7 +198,7 @@ void MPU6050_setSleepEnabled(uint8_t enabled) {
  *******************************************************************************/
 uint8_t MPU6050_getDeviceID(void) {
 
-  HAL_StatusTypeDef status = i2c_read(devAddr, MPU6050_RA_WHO_AM_I, 1, buffer);
+  i2c_read(devAddr, MPU6050_RA_WHO_AM_I, 1, buffer);
   return buffer[0];
 }
 
@@ -240,7 +236,7 @@ void MPU6050_setI2CBypassEnabled(uint8_t enabled) {
  *功　　能:	    初始化 	MPU6050 以进入可用状态。
  *******************************************************************************/
 void MPU6050_initialize(void) {
-  MPU6050_setClockSource(MPU6050_CLOCK_PLL_YGYRO); //设置时钟
+  MPU6050_setClockSource(MPU6050_CLOCK_PLL_XGYRO); //设置时钟
   MPU6050_setFullScaleGyroRange(MPU6050_GYRO_FS_2000); //陀螺仪最大量程 +-1000度每秒
   MPU6050_setFullScaleAccelRange(MPU6050_ACCEL_FS_2);	//加速度度最大量程 +-2G
   MPU6050_setSleepEnabled(0); //进入工作状态
@@ -259,27 +255,27 @@ void DMP_Init(void) {
     NVIC_SystemReset();
   if (!mpu_init(NULL)) {
     if (!mpu_set_sensors(INV_XYZ_GYRO | INV_XYZ_ACCEL))
-      log_i("mpu_set_sensor complete ......");
+      log_i("mpu_set_sensor complete ......\r\n");
     if (!mpu_configure_fifo(INV_XYZ_GYRO | INV_XYZ_ACCEL))
-      log_i("mpu_configure_fifo complete ......");
+      log_i("mpu_configure_fifo complete ......\r\n");
     if (!mpu_set_sample_rate(DEFAULT_MPU_HZ))
-      log_i("mpu_set_sample_rate complete ......");
+      log_i("mpu_set_sample_rate complete ......\r\n");
     if (!dmp_load_motion_driver_firmware())
-      log_i("dmp_load_motion_driver_firmware complete ......");
+      log_i("dmp_load_motion_driver_firmware complete ......\r\n");
     if (!dmp_set_orientation(
         inv_orientation_matrix_to_scalar(gyro_orientation)))
-      log_i("dmp_set_orientation complete ......");
+      log_i("dmp_set_orientation complete ......\r\n");
     if (!dmp_enable_feature(
         DMP_FEATURE_6X_LP_QUAT | DMP_FEATURE_TAP |
         DMP_FEATURE_ANDROID_ORIENT | DMP_FEATURE_SEND_RAW_ACCEL
             | DMP_FEATURE_SEND_CAL_GYRO |
             DMP_FEATURE_GYRO_CAL))
-      log_i("dmp_enable_feature complete ......");
+      log_i("dmp_enable_feature complete ......\r\n");
     if (!dmp_set_fifo_rate(DEFAULT_MPU_HZ))
-      log_i("dmp_set_fifo_rate complete ......");
+      log_i("dmp_set_fifo_rate complete ......\r\n");
     run_self_test();
     if (!mpu_set_dmp_state(1))
-      log_i("mpu_set_dmp_state complete ......");
+      log_i("mpu_set_dmp_state complete ......\r\n");
   }
 }
 /**************************************************************************
@@ -300,7 +296,6 @@ void Read_DMP(void) {
     q2 = quat[2] / q30;
     q3 = quat[3] / q30;
     Pitch = asin(-2 * q1 * q3 + 2 * q0 * q2) * 57.3;
-
   }
 
 }

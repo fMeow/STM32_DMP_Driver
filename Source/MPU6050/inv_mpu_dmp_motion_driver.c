@@ -19,6 +19,7 @@
 #include "MPU6050/inv_mpu_dmp_motion_driver.h"
 #include "MPU6050/dmpKey.h"
 #include "MPU6050/dmpmap.h"
+#include "MPU6050/I2C.h"
 
 /* The following functions must be defined for this platform:
  * i2c_write(unsigned char slave_addr, unsigned char reg_addr,
@@ -28,8 +29,6 @@
  * delay_ms(unsigned long num_ms)
  * get_ms(unsigned long *count)
  */
-#define STM32_HAL
-#define MPU6050
 
 #if defined MOTION_DRIVER_TARGET_MSP430
 #include "msp430.h"
@@ -62,19 +61,6 @@
 #define log_e       MPL_LOGE
 
 #elif defined STM32_HAL
-
-#ifdef TRACE
-#define log_i       trace_puts
-#define log_e       trace_puts
-#else
-#define log_i(...)     do {} while (0)
-#define log_e(...)     do {} while (0)
-#endif
-
-#define delay_ms  HAL_Delay
-#define get_ms(timestamp) (*timestamp=HAL_GetTick())
-
-#define __no_operation() (0)
 
 #else
 #error  Gyro driver is missing the system layer implementations.
