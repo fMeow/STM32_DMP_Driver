@@ -356,6 +356,11 @@ extern	short gyro[3], accel[3];
 extern int16_t Gx_offset,Gy_offset,Gz_offset;
 extern float Acc1G_Values;
 extern float Pitch;
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
 //供外部调用的API
 void MPU6050_initialize(void); //初始化
 uint8_t MPU6050_testConnection(void); //检测MPU6050是否存在
@@ -368,4 +373,9 @@ void MPU6050_InitGyro_Offset(void);//初始化陀螺仪偏置
 void DMP_Init(void);
 //void (void);
 int Read_Temperature(void);
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif
