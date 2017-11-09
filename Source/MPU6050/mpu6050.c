@@ -251,7 +251,7 @@ void MPU6050_initialize(void) {
  作    者：平衡小车之家
  **************************************************************************/
 void DMP_Init(void) {
-  if (MPU6050_getDeviceID() != devAddr)
+  if (MPU6050_getDeviceID() != 0x68)
     NVIC_SystemReset();
   if (!mpu_init(NULL)) {
     if (!mpu_set_sensors(INV_XYZ_GYRO | INV_XYZ_ACCEL))

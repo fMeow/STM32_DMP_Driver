@@ -4,13 +4,13 @@
 HAL_StatusTypeDef i2c_write(uint8_t slave_addr, uint8_t reg_addr,
     uint8_t length, uint8_t const *data) {
   return HAL_I2C_Mem_Write(&hi2cMPU6050, slave_addr << 1, reg_addr,
-  I2C_MEMADD_SIZE_8BIT, data, length, 2);
+  I2C_MEMADD_SIZE_8BIT, data, length, 10);
 }
 
 HAL_StatusTypeDef i2c_read(uint8_t slave_addr, uint8_t reg_addr, uint8_t length,
     uint8_t *data) {
   return HAL_I2C_Mem_Read(&hi2cMPU6050, slave_addr << 1, reg_addr,
-  I2C_MEMADD_SIZE_8BIT, data, length, 2);
+  I2C_MEMADD_SIZE_8BIT, data, length, 10);
 
 }
 

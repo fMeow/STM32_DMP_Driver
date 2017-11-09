@@ -23,6 +23,7 @@
 #include <math.h>
 #include "MPU6050/inv_mpu.h"
 #include "MPU6050/I2C.h"
+#include "MPU6050/mpu6050.h"
 
 /* The following functions must be defined for this platform:
  * i2c_write(unsigned char slave_addr, unsigned char reg_addr,
@@ -487,7 +488,7 @@ const struct gyro_reg_s reg = {
 #endif
 };
 const struct hw_s hw = {
-    .addr           = 0x68,
+    .addr           = devAddr,
     .max_fifo       = 1024,
     .num_reg        = 118,
     .temp_sens      = 340,
@@ -567,7 +568,7 @@ const struct gyro_reg_s reg = {
 #endif
 };
 const struct hw_s hw = {
-    .addr           = 0x68,
+    .addr           = devAddr,
     .max_fifo       = 1024,
     .num_reg        = 128,
     .temp_sens      = 321,
