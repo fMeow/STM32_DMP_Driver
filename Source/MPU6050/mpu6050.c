@@ -2,7 +2,7 @@
 #include "MPU6050/inv_mpu_dmp_motion_driver.h"
 #include "MPU6050/I2C.h"
 #include "MPU6050/mpu6050.h"
-
+#include "string.h" //for reset buffer
 
 #define PRINT_ACCEL     (0x01)
 #define PRINT_GYRO      (0x02)
@@ -197,7 +197,7 @@ void MPU6050_setSleepEnabled(uint8_t enabled) {
  *功　　能:	    读取  MPU6050 WHO_AM_I 标识	 将返回 0x68
  *******************************************************************************/
 uint8_t MPU6050_getDeviceID(void) {
-
+  memset(buffer,0,sizeof(buffer));
   i2c_read(devAddr, MPU6050_RA_WHO_AM_I, 1, buffer);
   return buffer[0];
 }
